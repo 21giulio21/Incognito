@@ -5,11 +5,16 @@ class Nodo:
     #Lista dei Quasi Identifier del nodo
     quasiIdentifier = []
     marked = False
+    isRoot = False
     frequencySet = []
+    nextNode = []
+    levelOfGeneralizations = dict()
+
 
     def __init__(self,quasiIdentifier,marked):
         self.quasiIdentifier = quasiIdentifier
         self.marked = marked
+        self.parent = None
 
     def calcoloFrequencySet(self):
         return [1,2,3]

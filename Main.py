@@ -1,42 +1,71 @@
-import Nodo
-import sys
-import math
+from Nodo import Nodo
 
-def stampo(grafo):
-    for i in grafo:
-        print i.descrizione()
+
+generalizzazione = dict()
+generalizzazione['zipcode'] = 5
+generalizzazione['sesso'] = 2
+generalizzazione['data'] = 3
+numeroQuasiIdentifier = 3
+
+
+def stampo(root):
+    i = 0
+    while(len(root.nextNode) > 0):
+        node = root.nextNode.pop()
+        print("Nodo successivo esistente !!!!" + str(i) + " ")
+        print(node)
+        i += 1
+
+'''
+Esegue la query e inserisce tutti gli zipcode (etc...) all'interno del primo nodo
+'''
+
+def costruisciGrafoRicorsivo(nodo, i, quasiIdIndex):
+
+    a = nodo.levelOfGeneralizations[nodo.quasiIdentifier[quasiIdIndex]]
+    b = generalizzazione[nodo.quasiIdentifier[quasiIdIndex]]
+    print("valore di a -> " + str(a))
+    print("valore di b -> " + str(b))
+    if(a == b):
+        return
+    nodo.levelOfGeneralizations[nodo.quasiIdentifier[quasiIdIndex]] = i
+    nodoSucc = Nodo(nodo.quasiIdentifier, False)
+    nodo.nextNode.append(nodoSucc)
+    costruisciGrafoRicorsivo(nodoSucc, i+1, quasiIdIndex)
+
+def costruisciGrafo(root, quasiIdentifiers, quasiIdIndex):
+    root.isRoot = True
+    root.quasiIdentifier = quasiIdentifiers
+
+    root.levelOfGeneralizations[quasiIdentifiers[quasiIdIndex]] = 0
+    nodo = Nodo(quasiIdentifiers, False)
+    print(nodo.quasiIdentifier[quasiIdIndex])
+    root.nextNode.append(nodo)
+    costruisciGrafoRicorsivo(nodo, 1, quasiIdIndex)
+    return root
+
 
 quasiIdentifier = []
-for i in range(1,len(sys.argv)):
-    g = 0
-    g = raw_input("inserire il grado di anonimizzazione: ")
-    tupla = (sys.argv[i],str(g))
-    quasiIdentifier.append(tupla)
+quasiIdentifier.append("zipcode")
+quasiIdentifier.append("sesso")
+quasiIdentifier.append("data")
 
+# generiamo tutte le coppi di quasiIdenifier
+quasiIdentifierCouple = []
+for qi in range(0, len(quasiIdentifier)):
+    for i in range(qi, len(quasiIdentifier)):
+        if(qi != i):
+            tupla = (quasiIdentifier[qi], quasiIdentifier[i])
+            quasiIdentifierCouple.append(tupla)
 
-numeroQuasiIdentifier = len(quasiIdentifier)
+for i in quasiIdentifierCouple:
+    print(i)
 
+for i in range (0, 3):
+    root = Nodo(quasiIdentifier, False)
+    root = costruisciGrafo(root, quasiIdentifier, i)
+    stampo(root)
 
-
-for i in range(1,numeroQuasiIdentifier):
-    numeroGrafi = math.factorial(numeroQuasiIdentifier) / (math.factorial(i) * math.factorial(numeroQuasiIdentifier-i))
-
-    #Grafi che vanno a costruirsi dal numero di grafi dell'iterazione
-    serieDiGrafi = []
-    for i in range(0,numeroGrafi):
-        grafo = []
-        for i in range(0,len(quasiIdentifier)):
-            grafo.append(Nodo.Nodo(quasiIdentifier[i][0],False))
-
-        '''
-        Costruisco tutti i grafi
-        '''
-# esco da tutti i for
-
-#for........False
-    '''
-    Ricerca in ampieza
-    '''
 
 
 
