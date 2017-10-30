@@ -1,77 +1,116 @@
 from Nodo import Nodo
-
+import copy
 
 generalizzazione = dict()
 generalizzazione['zipcode'] = 3
 generalizzazione['sesso'] = 2
 generalizzazione['data'] = 3
 numeroQuasiIdentifier = 3
+listOfQuasiIdentifier = ['zipcode', 'sesso', 'data']
+
+def nearNodes(node):
+    nodes = []
+    qi = copy.copy(node.quasiIdentifier)
+    for key in node.levelOfGeneralizations:
+        levels = node.levelOfGeneralizations.copy()
+        if(generalizzazione[key] > levels[key]):
+            levels[key] += 1
+            nodes.append(Nodo(qi, False, levels))
+    return nodes
+
+def printGraph(graph):
+    count = 0
+    for k in graph:
+        count += 1
+        print("counter -> " + str(count))
+        k.description()
+        for i in graph[k]:
+            print("nodo vicino:")
+            i.description()
+
+def doubleNodeGraphGenerator(qiString1, qiString2):
+    # numero di nodi = (generalizzazione[qiString1]+1)*(generalizzazione[qiString]+1)
+    listOfNode = []
+    qi = [qiString1, qiString2]
+
+    for i in range(0, generalizzazione[qiString2] + 1):
+        for j in range(0, generalizzazione[qiString1] + 1):
+            levelOfGeneralizations = dict()
+            levelOfGeneralizations[qiString2] = i
+            levelOfGeneralizations[qiString1] = j
+            node = Nodo(qi, False, levelOfGeneralizations)
+            listOfNode.append(node)
+    graph = dict()
+    for node in listOfNode:
+        graph[node] = nearNodes(node)
+    return graph
+
+def singleNodeGraphGenerator(qiString):
+    graph = dict()
+    listOfNode = []
+    qi = [qiString]
+    for i in range(0, generalizzazione[qiString] + 1):
+        levelOfGeneralizations = dict()
+        levelOfGeneralizations[qiString] = i
+        node = Nodo(qi, False, levelOfGeneralizations)
+        listOfNode.append(node)
+    for node in listOfNode:
+        graph[node] = nearNodes(node)
+    return graph
+
+def tripleNodeGraphGenerator(qiStr1, qiStr2, qiStr3):
+    # numero di nodi = qi1*qi2*qi3
+    listOfNode = []
+    qi = [qiStr1, qiStr2, qiStr3]
+
+    for i in range(0, generalizzazione[qiStr2] + 1):
+        for j in range(0, generalizzazione[qiStr1] + 1):
+            for k in range(0, generalizzazione[qiStr3] + 1):
+                levelOfGeneralizations = dict()
+                levelOfGeneralizations[qiStr3] = k
+                levelOfGeneralizations[qiStr2] = i
+                levelOfGeneralizations[qiStr1] = j
+                node = Nodo(qi, False, levelOfGeneralizations)
+                listOfNode.append(node)
+
+    graph = dict()
+    for node in listOfNode:
+        graph[node] = nearNodes(node)
+    return graph
+
+# costruzione grafo con nodi contenenti un solo quasi identifier
+for qi in listOfQuasiIdentifier:
+    print("+++++++++nuovo grafo++++++++++++++++++++++++++++")
+    g = singleNodeGraphGenerator(qi)
+    printGraph(g)
+    print("\n\n\n\n\n++++++++++++++++++++++++++\n\n\n\n\n\n")
 
 
-def stampo(root):
-    i = 0
-    print(root)
-    while(len(root.nextNode) > 0):
-        node = root.nextNode.pop()
-        print("Nodo successivo esistente !!!!" + str(i) + " ")
-        print(node)
-        i += 1
-
-'''
-Esegue la query e inserisce tutti gli zipcode (etc...) all'interno del primo nodo
-'''
-
-def costruisciGrafoRicorsivo(nodo, generValue, quasiIdIndex):
-
-    for i in range(0, len(nodo.quasiIdentifier)):
-        livelloDiGeneralizzazioneCorrente = nodo.levelOfGeneralizations[nodo.quasiIdentifier[quasiIdIndex]]
-        livelloDiGeneralizzazioneMax = generalizzazione[nodo.quasiIdentifier[quasiIdIndex]]
-        print("valore di a -> " + str(livelloDiGeneralizzazioneCorrente))
-        print("valore di b -> " + str(livelloDiGeneralizzazioneMax))
-        if(livelloDiGeneralizzazioneCorrente < livelloDiGeneralizzazioneMax):
-            nodo.levelOfGeneralizations[nodo.quasiIdentifier[quasiIdIndex]] = generValue
-            nodoSucc = Nodo(nodo.quasiIdentifier, False)
-            nodo.nextNode.append(nodoSucc)
-            costruisciGrafoRicorsivo(nodoSucc, generValue + 1, quasiIdIndex)
-        elif(livelloDiGeneralizzazioneCorrente == livelloDiGeneralizzazioneMax and i < len(nodo.quasiIdentifier)):
-            continue
-        else:
-            return
+# costruzione grafo con nodi contenenti due quasi identifier
+combinationsOfQi = []
+for qi1 in listOfQuasiIdentifier:
+    for qi2 in listOfQuasiIdentifier:
+        if(qi1 != qi2 and not(combinationsOfQi.__contains__(qi1 + "," + qi2)
+                           or combinationsOfQi.__contains__(qi2 + "," + qi1))):
+            combinationsOfQi.append(qi1 + "," + qi2)
 
 
-def costruisciGrafo(root, quasiIdentifiers, quasiIdIndex):
-    root.isRoot = True
-    root.quasiIdentifier = quasiIdentifiers
+for couple in combinationsOfQi:
+    print("+++++++++nuovo grafo++++++++++++++++++++++++++++")
+    l = couple.split(",")
+    g = doubleNodeGraphGenerator(l[0], l[1])
+    printGraph(g)
+    print("\n\n\n\n\n++++++++++++++++++++++++++\n\n\n\n\n\n")
 
-    for i in range(0, len(quasiIdentifiers)):
-        root.levelOfGeneralizations[quasiIdentifiers[i]] = 0
-        nodo = Nodo(quasiIdentifiers, False)
-        print(nodo.quasiIdentifier[quasiIdIndex])
-        root.nextNode.append(nodo)
-        costruisciGrafoRicorsivo(nodo, 1, quasiIdIndex)
-    return root
-
-
-quasiIdentifier = []
-quasiIdentifier.append("zipcode")
-quasiIdentifier.append("sesso")
+# costruzione grafo con nodi contenenti tre quasi identifier
+print("-------------nuovo grafo----------------------------")
+g = tripleNodeGraphGenerator(listOfQuasiIdentifier[0],
+                             listOfQuasiIdentifier[1],
+                             listOfQuasiIdentifier[2])
+printGraph(g)
+print("\n\n\n\n\n-------------------------------\n\n\n\n\n\n")
 
 
-# generiamo tutte le coppi di quasiIdenifier
-quasiIdentifierCouple = []
-for qi in range(0, len(quasiIdentifier)):
-    for i in range(qi, len(quasiIdentifier)):
-        if(qi != i):
-            tupla = (quasiIdentifier[qi], quasiIdentifier[i])
-            quasiIdentifierCouple.append(tupla)
-
-for i in quasiIdentifierCouple:
-    print(i)
-
-
-root = Nodo(quasiIdentifier, False)
-root = costruisciGrafo(root, quasiIdentifier, 0)
-stampo(root)
 
 
 

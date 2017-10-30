@@ -11,10 +11,11 @@ class Nodo:
     levelOfGeneralizations = dict()
 
 
-    def __init__(self,quasiIdentifier,marked):
+    def __init__(self,quasiIdentifier,marked, levelOfGeneralizations):
         self.quasiIdentifier = quasiIdentifier
         self.marked = marked
         self.parent = None
+        self.levelOfGeneralizations = levelOfGeneralizations
 
     def calcoloFrequencySet(self):
         return [1,2,3]
@@ -22,8 +23,11 @@ class Nodo:
     def setMarked(self,valore):
         self.marked = valore
 
-    def descrizione(self):
-        print "Marker del nodo "           + str(self.marked)
-        print "quasi Identifier del nodo " + self.quasiIdentifier
-        print "Frequency Set Del nodo"     +  self.frequencySet
+    def description(self):
+        print("*****dati nodo:*******")
+        print("quasi Identifier:")
+        print self.quasiIdentifier
+        print("livelli di generalizzazione:")
+        print self.levelOfGeneralizations
+        print("*****fine dati nodo********\n\n")
 
