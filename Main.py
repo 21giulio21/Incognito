@@ -78,38 +78,51 @@ def tripleNodeGraphGenerator(qiStr1, qiStr2, qiStr3):
         graph[node] = nearNodes(node)
     return graph
 
-# costruzione grafo con nodi contenenti un solo quasi identifier
-for qi in listOfQuasiIdentifier:
-    print("+++++++++nuovo grafo++++++++++++++++++++++++++++")
-    g = singleNodeGraphGenerator(qi)
+def bfs(graph, start):
+    visited, queue = set(), [start]
+    while queue:
+        vertex = queue.pop(0)
+        if vertex not in visited:
+            visited.add(vertex)
+            queue.extend(graph[vertex] - visited)
+    return visited
+
+def main():
+    # costruzione grafo con nodi contenenti un solo quasi identifier
+    for qi in listOfQuasiIdentifier:
+        print("+++++++++nuovo grafo++++++++++++++++++++++++++++")
+        g = singleNodeGraphGenerator(qi)
+        printGraph(g)
+        print("\n\n\n\n\n++++++++++++++++++++++++++\n\n\n\n\n\n")
+
+
+    # costruzione grafo con nodi contenenti due quasi identifier
+    combinationsOfQi = []
+    for qi1 in listOfQuasiIdentifier:
+        for qi2 in listOfQuasiIdentifier:
+            if(qi1 != qi2 and not(combinationsOfQi.__contains__(qi1 + "," + qi2)
+                               or combinationsOfQi.__contains__(qi2 + "," + qi1))):
+                combinationsOfQi.append(qi1 + "," + qi2)
+
+
+    for couple in combinationsOfQi:
+        print("+++++++++nuovo grafo++++++++++++++++++++++++++++")
+        l = couple.split(",")
+        g = doubleNodeGraphGenerator(l[0], l[1])
+        printGraph(g)
+        print("\n\n\n\n\n++++++++++++++++++++++++++\n\n\n\n\n\n")
+
+    # costruzione grafo con nodi contenenti tre quasi identifier
+    print("-------------nuovo grafo----------------------------")
+    g = tripleNodeGraphGenerator(listOfQuasiIdentifier[0],
+                                 listOfQuasiIdentifier[1],
+                                 listOfQuasiIdentifier[2])
     printGraph(g)
-    print("\n\n\n\n\n++++++++++++++++++++++++++\n\n\n\n\n\n")
+    print("\n\n\n\n\n-------------------------------\n\n\n\n\n\n")
 
 
-# costruzione grafo con nodi contenenti due quasi identifier
-combinationsOfQi = []
-for qi1 in listOfQuasiIdentifier:
-    for qi2 in listOfQuasiIdentifier:
-        if(qi1 != qi2 and not(combinationsOfQi.__contains__(qi1 + "," + qi2)
-                           or combinationsOfQi.__contains__(qi2 + "," + qi1))):
-            combinationsOfQi.append(qi1 + "," + qi2)
-
-
-for couple in combinationsOfQi:
-    print("+++++++++nuovo grafo++++++++++++++++++++++++++++")
-    l = couple.split(",")
-    g = doubleNodeGraphGenerator(l[0], l[1])
-    printGraph(g)
-    print("\n\n\n\n\n++++++++++++++++++++++++++\n\n\n\n\n\n")
-
-# costruzione grafo con nodi contenenti tre quasi identifier
-print("-------------nuovo grafo----------------------------")
-g = tripleNodeGraphGenerator(listOfQuasiIdentifier[0],
-                             listOfQuasiIdentifier[1],
-                             listOfQuasiIdentifier[2])
-printGraph(g)
-print("\n\n\n\n\n-------------------------------\n\n\n\n\n\n")
-
+if __name__ == "__main__":
+    main()
 
 
 
