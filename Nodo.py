@@ -2,12 +2,10 @@
 
 class Nodo:
 
-    #Lista dei Quasi Identifier del nodo
     quasiIdentifier = []
     marked = False
     isRoot = False
     frequencySet = []
-    nextNode = []
     levelOfGeneralizations = dict()
 
 
