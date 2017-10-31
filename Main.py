@@ -28,21 +28,35 @@ def nearNodes(node):
             nodes.append(Nodo(qi, False, levels))
     return nodes
 
+
+# visits all the nodes of a graph (connected component) using BFS
 def bfs(graph, start):
-    # to improve
-    visited, queue = set(), [start]
+    # keep track of all visited nodes
+    explored = []
+    # keep track of nodes to be checked
+    queue = [start]
+
+    # keep looping until there are nodes still to be checked
     while queue:
-        vertex = queue.pop(0)
-        if vertex not in visited:
-            visited.add(vertex)
-            queue.extend(graph[vertex] - visited)
-    return visited
+        # pop shallowest node (first node) from queue
+        node = queue.pop(0)
+        if node not in explored:
+            # add node to list of checked nodes
+            explored.append(node)
+            neighbours = graph[node]
+            print graph
+            node.description()
+            if neighbours is not None:
+                # add neighbours of node to queue
+                for neighbour in neighbours:
+                    queue.append(neighbour)
+    return explored
 
 def main():
     # costruzione grafo con nodi contenenti un solo quasi identifier
     for qi in listOfQuasiIdentifier:
         g = Graph.SingleNodeGraph(qi)
-        g.printGraph()
+        #g.printGraph()
 
     # costruzione grafo con nodi contenenti due quasi identifier
 
@@ -51,13 +65,16 @@ def main():
     for couple in combinationsOfQi:
         l = couple.split(",")
         g = Graph.DoubleNodeGraph(l[0], l[1])
-        g.printGraph()
-
+        #g.printGraph()
+        graph = g.getGraph()
+        visited = bfs(graph, g.getRoot())
+        print("RISULTATO BFS:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print visited
     # costruzione grafo con nodi contenenti tre quasi identifier
     g = Graph.TripleNodeGraph(listOfQuasiIdentifier[0],
                                  listOfQuasiIdentifier[1],
                                  listOfQuasiIdentifier[2])
-    g.printGraph()
+    #g.printGraph()
 
 
 if __name__ == "__main__":
