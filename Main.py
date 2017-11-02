@@ -44,7 +44,6 @@ def bfs(graph, start):
             # add node to list of checked nodes
             explored.append(node)
             neighbours = graph[node]
-            node.description()
             if neighbours is not None:
                 # add neighbours of node to queue
                 for neighbour in neighbours:
@@ -59,6 +58,7 @@ def getKeyByDictionary(levels, graph):
         if k.levelOfGeneralizations == levels:
             return k
     return None
+
 
 def main():
     # costruzione grafo con nodi contenenti un solo quasi identifier
@@ -81,8 +81,9 @@ def main():
             i.description()
     # costruzione grafo con nodi contenenti tre quasi identifier
     g = Graph.TripleNodeGraph(listOfQuasiIdentifier[0],
-                              listOfQuasiIdentifier[1],
-                              listOfQuasiIdentifier[2])
+                                 listOfQuasiIdentifier[1],
+                                 listOfQuasiIdentifier[2])
+
     #g.printGraph()
 
 

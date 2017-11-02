@@ -87,6 +87,8 @@ class DoubleNodeGraph:
                 return k
         return None
 
+
+
 class TripleNodeGraph:
     def __init__(self, qiStr1, qiStr2, qiStr3):
         # numero di nodi = qi1*qi2*qi3
