@@ -18,15 +18,7 @@ def generateCombinationsOfQuasiIdentifier():
                 combinationsOfQi.append(qi1 + "," + qi2)
     return combinationsOfQi
 
-def nearNodes(node):
-    nodes = []
-    qi = copy.copy(node.quasiIdentifier)
-    for key in node.levelOfGeneralizations:
-        levels = node.levelOfGeneralizations.copy()
-        if(generalizzazione[key] > levels[key]):
-            levels[key] += 1
-            nodes.append(Nodo(qi, False, levels))
-    return nodes
+
 
 
 # visits all the nodes of a graph (connected component) using BFS

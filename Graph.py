@@ -1,4 +1,5 @@
-from Main import nearNodes
+# from Main import nearNodes
+from DB import DB
 from Nodo import Nodo
 import copy
 
@@ -8,8 +9,19 @@ generalizzazione['zipcode'] = 3
 generalizzazione['sesso'] = 2
 generalizzazione['data'] = 3
 
+def nearNodes(node):
+    nodes = []
+    qi = copy.copy(node.quasiIdentifier)
+    for key in node.levelOfGeneralizations:
+        levels = node.levelOfGeneralizations.copy()
+        if(generalizzazione[key] > levels[key]):
+            levels[key] += 1
+            nodes.append(Nodo(qi, False, levels))
+    return nodes
+
 class SingleNodeGraph:
     def __init__(self, qiString):
+        self.db = DB("./database.sqlite")
         self.graph = dict()
         listOfNode = []
         qi = [qiString]
@@ -49,6 +61,7 @@ class SingleNodeGraph:
 class DoubleNodeGraph:
     def __init__(self, qiString1, qiString2):
         # numero di nodi = (generalizzazione[qiString1]+1)*(generalizzazione[qiString]+1)
+        self.db = DB("./database.sqlite")
         listOfNode = []
         qi = [qiString1, qiString2]
         self.quasiId = copy.copy(qi)
@@ -92,6 +105,7 @@ class DoubleNodeGraph:
 class TripleNodeGraph:
     def __init__(self, qiStr1, qiStr2, qiStr3):
         # numero di nodi = qi1*qi2*qi3
+        self.db = DB("./database.sqlite")
         listOfNode = []
         qi = [qiStr1, qiStr2, qiStr3]
         self.quasiId = copy.copy(qi)
