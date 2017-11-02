@@ -3,9 +3,9 @@ import Graph
 import copy
 
 generalizzazione = dict()
-generalizzazione['zipcode'] = 3
-generalizzazione['sesso'] = 2
-generalizzazione['data'] = 3
+generalizzazione['zipcode'] = 2
+generalizzazione['sesso'] = 1
+generalizzazione['data'] = 2
 numeroQuasiIdentifier = 3
 listOfQuasiIdentifier = ['zipcode', 'sesso', 'data']
 
@@ -28,21 +28,43 @@ def nearNodes(node):
             nodes.append(Nodo(qi, False, levels))
     return nodes
 
+
+# visits all the nodes of a graph (connected component) using BFS
 def bfs(graph, start):
-    # to improve
-    visited, queue = set(), [start]
+    # keep track of all visited nodes
+    explored = []
+    # keep track of nodes to be checked
+    queue = [start]
+
+    # keep looping until there are nodes still to be checked
     while queue:
-        vertex = queue.pop(0)
-        if vertex not in visited:
-            visited.add(vertex)
-            queue.extend(graph[vertex] - visited)
-    return visited
+        # pop shallowest node (first node) from queue
+        node = queue.pop(0)
+        if node not in explored:
+            # add node to list of checked nodes
+            explored.append(node)
+            neighbours = graph[node]
+            node.description()
+            if neighbours is not None:
+                # add neighbours of node to queue
+                for neighbour in neighbours:
+                    nodeToAdd = getKeyByDictionary(neighbour.levelOfGeneralizations, graph)
+                    queue.append(nodeToAdd)
+                    # Al posto del break va calcolato il frequency set
+                    break
+    return explored
+
+def getKeyByDictionary(levels, graph):
+    for k in graph:
+        if k.levelOfGeneralizations == levels:
+            return k
+    return None
 
 def main():
     # costruzione grafo con nodi contenenti un solo quasi identifier
     for qi in listOfQuasiIdentifier:
         g = Graph.SingleNodeGraph(qi)
-        g.printGraph()
+        #g.printGraph()
 
     # costruzione grafo con nodi contenenti due quasi identifier
 
@@ -51,13 +73,17 @@ def main():
     for couple in combinationsOfQi:
         l = couple.split(",")
         g = Graph.DoubleNodeGraph(l[0], l[1])
-        g.printGraph()
-
+        #g.printGraph()
+        graph = g.getGraph()
+        visited = bfs(graph, g.getRoot())
+        print("RISULTATO BFS:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        for i in visited:
+            i.description()
     # costruzione grafo con nodi contenenti tre quasi identifier
     g = Graph.TripleNodeGraph(listOfQuasiIdentifier[0],
-                                 listOfQuasiIdentifier[1],
-                                 listOfQuasiIdentifier[2])
-    g.printGraph()
+                              listOfQuasiIdentifier[1],
+                              listOfQuasiIdentifier[2])
+    #g.printGraph()
 
 
 if __name__ == "__main__":

@@ -1,5 +1,6 @@
 from Main import nearNodes
 from Nodo import Nodo
+import copy
 
 
 generalizzazione = dict()
@@ -12,10 +13,13 @@ class SingleNodeGraph:
         self.graph = dict()
         listOfNode = []
         qi = [qiString]
+        self.quasiId = copy.copy(qi)
         for i in range(0, generalizzazione[qiString] + 1):
             levelOfGeneralizations = dict()
             levelOfGeneralizations[qiString] = i
             node = Nodo(qi, False, levelOfGeneralizations)
+            if i == 0:
+                node.isRoot = True
             listOfNode.append(node)
         for node in listOfNode:
             self.graph[node] = nearNodes(node)
@@ -32,8 +36,14 @@ class SingleNodeGraph:
                 i.description()
         print("---------fine grafo----------------------------\n\n\n\n\n\n")
 
-    def getSingleNodeGraph(self):
+    def getGraph(self):
         return self.graph
+
+    def getRoot(self):
+        for k in self.graph:
+            if k.isRoot:
+                return k
+        return None
 
 
 class DoubleNodeGraph:
@@ -41,13 +51,15 @@ class DoubleNodeGraph:
         # numero di nodi = (generalizzazione[qiString1]+1)*(generalizzazione[qiString]+1)
         listOfNode = []
         qi = [qiString1, qiString2]
-
+        self.quasiId = copy.copy(qi)
         for i in range(0, generalizzazione[qiString2] + 1):
             for j in range(0, generalizzazione[qiString1] + 1):
                 levelOfGeneralizations = dict()
                 levelOfGeneralizations[qiString2] = i
                 levelOfGeneralizations[qiString1] = j
                 node = Nodo(qi, False, levelOfGeneralizations)
+                if i == 0 and j == 0:
+                    node.isRoot = True
                 listOfNode.append(node)
         self.graph = dict()
         for node in listOfNode:
@@ -66,16 +78,21 @@ class DoubleNodeGraph:
                 i.description()
         print("---------fine grafo----------------------------\n\n\n\n\n\n")
 
-    def getSingleNodeGraph(self):
+    def getGraph(self):
         return self.graph
 
+    def getRoot(self):
+        for k in self.graph:
+            if k.isRoot:
+                return k
+        return None
 
 class TripleNodeGraph:
     def __init__(self, qiStr1, qiStr2, qiStr3):
         # numero di nodi = qi1*qi2*qi3
         listOfNode = []
         qi = [qiStr1, qiStr2, qiStr3]
-
+        self.quasiId = copy.copy(qi)
         for i in range(0, generalizzazione[qiStr2] + 1):
             for j in range(0, generalizzazione[qiStr1] + 1):
                 for k in range(0, generalizzazione[qiStr3] + 1):
@@ -84,6 +101,8 @@ class TripleNodeGraph:
                     levelOfGeneralizations[qiStr2] = i
                     levelOfGeneralizations[qiStr1] = j
                     node = Nodo(qi, False, levelOfGeneralizations)
+                    if i == 0 and j == 0 and k == 0:
+                        node.isRoot = True
                     listOfNode.append(node)
 
         self.graph = dict()
@@ -103,7 +122,12 @@ class TripleNodeGraph:
                 i.description()
         print("---------fine grafo----------------------------\n\n\n\n\n\n")
 
-    def getSingleNodeGraph(self):
+    def getGraph(self):
         return self.graph
 
+    def getRoot(self):
+        for k in self.graph:
+            if k.isRoot:
+                return k
+        return None
 
