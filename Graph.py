@@ -21,7 +21,6 @@ def nearNodes(node):
 
 class SingleNodeGraph:
     def __init__(self, qiString):
-        self.db = DB("./database.sqlite")
         self.graph = dict()
         listOfNode = []
         qi = [qiString]
@@ -61,7 +60,6 @@ class SingleNodeGraph:
 class DoubleNodeGraph:
     def __init__(self, qiString1, qiString2):
         # numero di nodi = (generalizzazione[qiString1]+1)*(generalizzazione[qiString]+1)
-        self.db = DB("./database.sqlite")
         listOfNode = []
         qi = [qiString1, qiString2]
         self.quasiId = copy.copy(qi)
@@ -105,7 +103,6 @@ class DoubleNodeGraph:
 class TripleNodeGraph:
     def __init__(self, qiStr1, qiStr2, qiStr3):
         # numero di nodi = qi1*qi2*qi3
-        self.db = DB("./database.sqlite")
         listOfNode = []
         qi = [qiStr1, qiStr2, qiStr3]
         self.quasiId = copy.copy(qi)

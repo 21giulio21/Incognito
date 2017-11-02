@@ -12,7 +12,7 @@ from DB import DB
 # Just be sure any changes have been committed or they will be lost.
 #conn.close()
 
-db = DB('/home/giulio/Scrivania/PROVA.sqlite')
+db = DB('./database.sqlite')
 db.insertIntoTable("TABELLA")
 valoriTornati =  db.selectAllFromTable("TABELLA")
 
