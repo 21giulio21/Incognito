@@ -1,25 +1,32 @@
-import sqlite3
+
 from DB import DB
 
-#c = conn.cursor()
-# Insert a row of data
-#c.execute("INSERT INTO TABELLA VALUES (NULL,'M')")
+'''
+Le tabella sono costruite in questo modo: 
 
-# Save (commit) the changes
-#conn.commit()
+TABELLA_1: ID, ZIPCODE, NOME
+TABELLA_2: ID, ZIPCODE, SESSO, NOME
+TABELLA_3: ID, ZIPCODE, SESSO, DATA_NASCITA, NOME
 
-# We can also close the connection if we are done with it.
-# Just be sure any changes have been committed or they will be lost.
-#conn.close()
 
-db = DB('./database.sqlite')
-db.insertIntoTable("TABELLA")
-valoriTornati =  db.selectAllFromTable("TABELLA")
 
-for i in valoriTornati.fetchall():
-    id , nome = i
-    print " ID -> " + str(id)
-    print " NOME ->" +  nome
+'''
+db = DB('/home/giulio/Scrivania/PROVA.sqlite')
 
+#db.insertIntoTable2()
+
+
+#db.insertIntoTable1()
+#db.svuotaTabella("TABELLA_1")
+#db.stampaTabella1()
+#v = db.selectAllFromTable1()
+
+db.insertIntoTable3()
+
+#print db.selectCountFromQuasiIdentifierTabella2()
+
+
+'''
 #Print del count
 print db.selectCountFromQuasiIdentifier("NOME","TABELLA").fetchall()
+'''
