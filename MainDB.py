@@ -11,7 +11,7 @@ TABELLA_3: ID, ZIPCODE, SESSO, DATA_NASCITA, NOME
 
 
 '''
-db = DB('/home/giulio/Scrivania/PROVA.sqlite')
+db = DB('./PROVA.sqlite')
 
 #db.insertIntoTable2()
 

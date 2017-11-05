@@ -173,7 +173,7 @@ class DB:
         elif tabella == "TABELLA_3":
             self.insertIntoTable3()
 
-        #dizionario è fa
+        #dizionario  fa
 
         if qi == "SESSO":
             for i in range(0,400):
