@@ -5,9 +5,9 @@ import copy
 
 
 generalizzazione = dict()
-generalizzazione['zipcode'] = 3
-generalizzazione['sesso'] = 2
-generalizzazione['data'] = 3
+generalizzazione['ZIPCODE'] = 3
+generalizzazione['SESSO'] = 1
+generalizzazione['DATA_NASCITA'] = 3
 
 def nearNodes(node):
     nodes = []

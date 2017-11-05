@@ -104,8 +104,8 @@ class DB:
     # TORNA UN ARRay associativo in cui in posizione ARRAY[0] conviene la prima tupla e
     # ARRAY[0][0] CONTIENE L'ID DELLA TUPLA 0 E ARRAY[0][1] torna lo zipcode della
     # prima tupla, ovviamente i qi vanno datiin questo modo: q1,q2
-    def selectCountFromQuasiIdentifierTabella1(self,qi):
-        query = "Select Count(*),"+qi+" from TABELLA_1 GROUP BY " + qi
+    def selectCountFromQuasiIdentifierTabella(self,qi, tabella):
+        query = "Select Count(*),"+qi+" from " + tabella + " GROUP BY " + qi
         return self.cursore.execute(query).fetchall();
 
      # In questa funzione deve esserci: Select COUNT(*) FROM TABELLA GROUP BY Q1,Q2
@@ -174,12 +174,12 @@ class DB:
             self.insertIntoTable3()
 
         #dizionario e' fatto in questo modo: dizionario["SESSO"] = 1
-        if dizionario["SESSO"] == 1:
+        if "SESSO" in dizionario.keys() and dizionario["SESSO"] == 1:
             for i in range(0,400):
                 query = "UPDATE "+tabella+" SET SESSO = '*' WHERE 1=1"
                 self.cursore.execute(query)
                 self.conn.commit()
-        if dizionario["ZIPCODE"] == 1:
+        if "ZIPCODE" in dizionario.keys() and dizionario["ZIPCODE"] == 1:
             #In questo caso lo zipcode deve essere lo stesso ma con un * infondo
             # prima prendo la tupla corrente e gli modifico lo zipcode
             for i in range(0,400):
@@ -190,10 +190,10 @@ class DB:
                 #ora modifico il valore e volgo uno carattere
                 zipcode = zipcode[:-1] + "*"
                 query = "UPDATE "+tabella+" SET ZIPCODE = '"+ zipcode +"' WHERE ID="+str(id)
-                print query
+                #print query
                 self.cursore.execute(query)
                 self.conn.commit()
-        elif dizionario["ZIPCODE"] == 2:
+        elif "ZIPCODE" in dizionario.keys() and dizionario["ZIPCODE"] == 2:
             # In questo caso lo zipcode deve essere lo stesso ma con due * infondo
             # prima prendo la tupla corrente e gli modifico lo zipcode
             for i in range(0, 400):
@@ -204,10 +204,10 @@ class DB:
                 # ora modifico il valore e volgo uno carattere
                 zipcode = zipcode[:-2] + "**"
                 query = "UPDATE " + tabella + " SET ZIPCODE = '" + zipcode + "' WHERE ID=" + str(id)
-                print query
+                #print query
                 self.cursore.execute(query)
                 self.conn.commit()
-        elif dizionario["ZIPCODE"] == 3:
+        elif "ZIPCODE" in dizionario.keys() and dizionario["ZIPCODE"] == 3:
             # In questo caso lo zipcode deve essere lo stesso ma con tre * infondo
             # prima prendo la tupla corrente e gli modifico lo zipcode
             for i in range(0, 400):
@@ -218,10 +218,10 @@ class DB:
                 # ora modifico il valore e volgo uno carattere
                 zipcode = zipcode[:-3] + "***"
                 query = "UPDATE " + tabella + " SET ZIPCODE = '" + zipcode + "' WHERE ID=" + str(id)
-                print query
+                #print query
                 self.cursore.execute(query)
                 self.conn.commit()
-        elif dizionario["ZIPCODE"] == 4:
+        elif "ZIPCODE" in dizionario.keys() and dizionario["ZIPCODE"] == 4:
             # In questo caso lo zipcode deve essere lo stesso ma con quattro * infondo
             # prima prendo la tupla corrente e gli modifico lo zipcode
             for i in range(0, 400):
@@ -232,10 +232,10 @@ class DB:
                 # ora modifico il valore e volgo uno carattere
                 zipcode = zipcode[:-4] + "****"
                 query = "UPDATE " + tabella + " SET ZIPCODE = '" + zipcode + "' WHERE ID=" + str(id)
-                print query
+                #print query
                 self.cursore.execute(query)
                 self.conn.commit()
-        elif dizionario["ZIPCODE"] == 5:
+        elif "ZIPCODE" in dizionario.keys() and dizionario["ZIPCODE"] == 5:
             # In questo caso lo zipcode deve essere lo stesso ma con quattro * infondo
             # prima prendo la tupla corrente e gli modifico lo zipcode
             for i in range(0, 400):
@@ -246,10 +246,10 @@ class DB:
                 # ora modifico il valore e volgo uno carattere
                 zipcode = zipcode[:-5] + "*****"
                 query = "UPDATE " + tabella + " SET ZIPCODE = '" + zipcode + "' WHERE ID=" + str(id)
-                print query
+                #print query
                 self.cursore.execute(query)
                 self.conn.commit()
-        if dizionario["DATA_NASCITA"] == 1:
+        if "DATA_NASCITA" in dizionario.keys() and dizionario["DATA_NASCITA"] == 1:
             # In questo caso la DATA_NASCITA deve essere lo stesso ma con un * infondo, al posto dell'anno
             # prima prendo la tupla corrente e gli modifico l'annno
             for i in range(0, 400):
@@ -265,10 +265,10 @@ class DB:
                 anno_nascita = "*"
                 data_nascita = giorno_nascita +"-" + mese_nascita+"-"+anno_nascita
                 query = "UPDATE " + tabella + " SET DATA_NASCITA = '" + data_nascita + "' WHERE ID=" + str(id)
-                print query
+                #print query
                 self.cursore.execute(query)
                 self.conn.commit()
-        elif dizionario["DATA_NASCITA"] == 2:
+        elif "DATA_NASCITA" in dizionario.keys() and dizionario["DATA_NASCITA"] == 2:
             # In questo caso la DATA_NASCITA deve essere lo stesso ma con un * infondo, al posto dell'anno
             # prima prendo la tupla corrente e gli modifico l'annno
             for i in range(0, 400):
@@ -285,11 +285,11 @@ class DB:
                 mese_nascita = "*"
                 data_nascita = giorno_nascita +"-" + mese_nascita+"-"+anno_nascita
                 query = "UPDATE " + tabella + " SET DATA_NASCITA = '" + data_nascita + "' WHERE ID=" + str(id)
-                print query
+                #print query
                 self.cursore.execute(query)
                 self.conn.commit()
-        elif dizionario["DATA_NASCITA"] == 3:
-            print "PORCO"
+        elif "DATA_NASCITA" in dizionario.keys() and dizionario["DATA_NASCITA"] == 3:
+            #print "PORCO"
             # In questo caso la DATA_NASCITA deve essere lo stesso ma con un * infondo, al posto dell'anno
             # prima prendo la tupla corrente e gli modifico l'annno
             for i in range(0, 400):
@@ -303,7 +303,7 @@ class DB:
 
                 data_nascita = "*-*-*"
                 query = "UPDATE " + tabella + " SET DATA_NASCITA = '" + data_nascita + "' WHERE ID=" + str(id)
-                print query
+                #print query
                 self.cursore.execute(query)
                 self.conn.commit()
 
