@@ -22,7 +22,7 @@ class DB:
         return self.cursore.execute(query).fetchall();
 
     def svuotaTabella(self,tabella):
-        query = "DELETE FROM TABELLA_1 WHERE 1=1;"
+        query = "DELETE FROM "+tabella+" WHERE 1=1;"
         self.cursore.execute(query)
 
 
@@ -103,29 +103,25 @@ class DB:
     # In questa funzione deve esserci: Select COUNT(*) FROM TABELLA GROUP BY Q1,Q2
     # TORNA UN ARRay associativo in cui in posizione ARRAY[0] conviene la prima tupla e
     # ARRAY[0][0] CONTIENE L'ID DELLA TUPLA 0 E ARRAY[0][1] torna lo zipcode della
-    # prima tupla
-    def selectCountFromQuasiIdentifierTabella1(self):
-        qi = "ZIPCODE"
-        query = "Select Count(*),ZIPCODE from TABELLA_1 GROUP BY " + qi
+    # prima tupla, ovviamente i qi vanno datiin questo modo: q1,q2
+    def selectCountFromQuasiIdentifierTabella1(self,qi):
+        query = "Select Count(*),"+qi+" from TABELLA_1 GROUP BY " + qi
         return self.cursore.execute(query).fetchall();
 
      # In questa funzione deve esserci: Select COUNT(*) FROM TABELLA GROUP BY Q1,Q2
     # TORNA UN ARRay associativo in cui in posizione ARRAY[0] conviene la prima tupla e
     #  ARRAY[0][0] CONTIENE L'ID DELLA TUPLA 0 E ARRAY[0][1] torna lo zipcode della
-    # prima tupla e ARRAY[0][2] contiene il sesso
-    def selectCountFromQuasiIdentifierTabella2(self):
-        qi = "ZIPCODE,SESSO"
-        query = "Select Count(*),ZIPCODE,SESSO from TABELLA_2 GROUP BY " + qi
+    # prima tupla e ARRAY[0][2] contiene il sesso, ovviamente i qi vanno datiin questo modo: q1,q2
+    def selectCountFromQuasiIdentifierTabella2(self,qi):
+        query = "Select Count(*),"+qi+" from TABELLA_2 GROUP BY " + qi
         return self.cursore.execute(query).fetchall();
 
     # In questa funzione deve esserci: Select COUNT(*) FROM TABELLA GROUP BY Q1,Q2
     # TORNA UN ARRay associativo in cui in posizione ARRAY[0] conviene la prima tupla e
     #  ARRAY[0][0] CONTIENE L'ID DELLA TUPLA 0 E ARRAY[0][1] torna lo zipcode della
-    # prima tupla e ARRAY[0][2] contiene il sesso
-
-    def selectCountFromQuasiIdentifierTabella3(self):
-        qi = "ZIPCODE,SESSO,DATA_NASCITA"
-        query = "Select Count(*),ZIPCODE,SESSO,DATA_NASCITA from TABELLA_3 GROUP BY " + qi
+    # prima tupla e ARRAY[0][2] contiene il sesso,ovviamente i qi vanno datiin questo modo: q1,q2
+    def selectCountFromQuasiIdentifierTabella3(self,qi):
+        query = "Select Count(*),"+qi+" from TABELLA_3 GROUP BY " + qi
         return self.cursore.execute(query).fetchall();
 
 
@@ -161,3 +157,24 @@ class DB:
             print " CAP ->" + zipcode
             print "\n"
 
+    # Quando chiamo la funzione anonumizzazione ricreo il database che deve essere modificato
+    # in questo modo anonimizzo  questo database temporaneo.
+    # Questa funzione viene chiamata pero da un DB db2 = DB(pathDatabase da modificare)
+    def anonimizzazione(self,tabella,dizionario):
+
+        #Riempio prima di tutto il database nuovo dopo averlo svuotato
+        self.svuotaTabella(tabella)
+
+        #Inserisco le tuple nella tabella che devo utilizzare per anonimizzare
+        if tabella == "TABELLA_1":
+            self.insertIntoTable1()
+        elif tabella == "TABELLA_2":
+            self.insertIntoTable2()
+        elif tabella == "TABELLA_3":
+            self.insertIntoTable3()
+
+        #dizionario è fa
+
+        if qi == "SESSO":
+            for i in range(0,400):
+                query = "UPDATE "+tabella+" SET SESSO = '*' WHERE ID=" + str(i)
