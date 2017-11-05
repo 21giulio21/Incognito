@@ -109,40 +109,37 @@ def bfs(graph, start, kAnonimity):
             # add node to list of checked nodes
             if node.isRoot:
                 if len(node.quasiIdentifier) == 1:
-                    frequencySet = testDB.selectCountFromQuasiIdentifierTabella1(
+                    resultQuery = testDB.selectCountFromQuasiIdentifierTabella1(
                         node.quasiIdentifier[0].upper()
                     )
                 elif len(node.quasiIdentifier) == 2:
-                    frequencySet = testDB.selectCountFromQuasiIdentifierTabella2(
-                        node.quasiIdentifier[0].upper(),
-                        node.quasiIdentifier[1].upper()
-                    )
+                    q = node.quasiIdentifier[0].upper() + "," + node.quasiIdentifier[1].upper()
+                    resultQuery = testDB.selectCountFromQuasiIdentifierTabella2(q)
                 else:
-                    frequencySet = testDB.selectCountFromQuasiIdentifierTabella3(
-                        node.quasiIdentifier[0].upper(),
-                        node.quasiIdentifier[1].upper(),
-                        node.quasiIdentifier[2].upper()
-                    )
+                    q = node.quasiIdentifier[0].upper() + "," \
+                        + node.quasiIdentifier[1].upper() + "," \
+                        + node.quasiIdentifier[2].upper()
+                    resultQuery = testDB.selectCountFromQuasiIdentifierTabella3(q)
             else:
                 if len(node.quasiIdentifier) == 1:
                     # anonimizza il database sulla base del nodo in cui sei
-                    frequencySet = testDB.selectCountFromQuasiIdentifierTabella1(
+                    resultQuery = testDB.selectCountFromQuasiIdentifierTabella1(
                         node.quasiIdentifier[0].upper()
                     )
                 elif len(node.quasiIdentifier) == 2:
                     # anonimizza il database sulla base del nodo in cui sei
-                    frequencySet = testDB.selectCountFromQuasiIdentifierTabella2(
-                        node.quasiIdentifier[0].upper(),
-                        node.quasiIdentifier[1].upper()
-                    )
+                    q = node.quasiIdentifier[0].upper() + "," + node.quasiIdentifier[1].upper()
+                    resultQuery = testDB.selectCountFromQuasiIdentifierTabella2(q)
                 else:
-                    frequencySet = testDB.selectCountFromQuasiIdentifierTabella3(
-                        node.quasiIdentifier[0].upper(),
-                        node.quasiIdentifier[1].upper(),
-                        node.quasiIdentifier[2].upper()
-                    )
-            print frequencySet
-            if min(frequencySet) == kAnonimity:
+                    q = node.quasiIdentifier[0].upper() + "," \
+                        + node.quasiIdentifier[1].upper() + "," \
+                        + node.quasiIdentifier[2].upper()
+                    resultQuery = testDB.selectCountFromQuasiIdentifierTabella3(q)
+
+            frequencySet = []
+            for i in resultQuery:
+                frequencySet.append(i[0])
+            if min(frequencySet) >= kAnonimity:
                 node.marked = True
                 print "trovato nodo con k anonimity"
                 for n in graph[node]:
