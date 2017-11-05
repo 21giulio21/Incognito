@@ -11,7 +11,13 @@ TABELLA_3: ID, ZIPCODE, SESSO, DATA_NASCITA, NOME
 
 
 '''
-db = DB('/home/giulio/Scrivania/PROVA.sqlite')
+db = DB('/home/giulio/Scrivania/AonzoVenduto.sqlite')
+dizionario = dict()
+dizionario["SESSO"] = 0
+dizionario["ZIPCODE"] = 5
+dizionario["DATA_NASCITA"] = 1
+db.anonimizzazione("TABELLA_3",dizionario)
+
 
 #db.insertIntoTable2()
 
@@ -21,7 +27,7 @@ db = DB('/home/giulio/Scrivania/PROVA.sqlite')
 #db.stampaTabella1()
 #v = db.selectAllFromTable1()
 
-db.insertIntoTable3()
+#db.insertIntoTable3()
 
 #print db.selectCountFromQuasiIdentifierTabella2()
 
