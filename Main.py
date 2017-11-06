@@ -98,7 +98,6 @@ def generateCombinationsOfQuasiIdentifier():
 
 # visits all the nodes of a graph (connected component) using BFS
 def bfs(graph, start, kAnonimity, tabella):
-    # keep track of nodes to be checked
     testDB = DB("./PROVA.sqlite")
     queue = [start]
     # keep looping until there are nodes still to be checked
@@ -121,20 +120,18 @@ def bfs(graph, start, kAnonimity, tabella):
                         + node.quasiIdentifier[2].upper()
                     resultQuery = testDB.selectCountFromQuasiIdentifierTabella(q, tabella)
             else:
-                db2 = DB("./AonzoVenduto.sqlite")
+                testDB = DB("./AonzoVenduto.sqlite")
                 if len(node.quasiIdentifier) == 1:
-                    # anonimizza il database sulla base del nodo in cui sei
-                    db2.anonimizzazione(tabella, node.levelOfGeneralizations)
+                    testDB.anonimizzazione(tabella, node.levelOfGeneralizations)
                     resultQuery = testDB.selectCountFromQuasiIdentifierTabella(
                         node.quasiIdentifier[0].upper(), tabella
                     )
                 elif len(node.quasiIdentifier) == 2:
-                    # anonimizza il database sulla base del nodo in cui sei
-                    db2.anonimizzazione(tabella, node.levelOfGeneralizations)
+                    testDB.anonimizzazione(tabella, node.levelOfGeneralizations)
                     q = node.quasiIdentifier[0].upper() + "," + node.quasiIdentifier[1].upper()
                     resultQuery = testDB.selectCountFromQuasiIdentifierTabella(q, tabella)
                 else:
-                    db2.anonimizzazione(tabella, node.levelOfGeneralizations)
+                    testDB.anonimizzazione(tabella, node.levelOfGeneralizations)
                     q = node.quasiIdentifier[0].upper() + "," \
                         + node.quasiIdentifier[1].upper() + "," \
                         + node.quasiIdentifier[2].upper()
@@ -143,13 +140,18 @@ def bfs(graph, start, kAnonimity, tabella):
             frequencySet = []
             for i in resultQuery:
                 frequencySet.append(i[0])
-            if min(frequencySet) >= kAnonimity:
+            print "frequency set"
+            print frequencySet
+            minimum = min(frequencySet)
+            print "condition: " + str(min(frequencySet)) + " >= " + str(kAnonimity) + " = " + str(minimum >= kAnonimity)
+            if minimum >= kAnonimity:
                 node.marked = True
                 print "trovato nodo con k anonimity"
                 for n in graph[node]:
                     nodeToMark = getKeyByDictionary(n.levelOfGeneralizations, graph)
                     nodeToMark.marked = True
             else:
+                print "non ancora raggiunta la k anonimity"
                 neighbours = graph[node]
                 if neighbours is not None:
                     # add neighbours of node to queue
@@ -174,8 +176,9 @@ def getKeyByDictionary(levels, graph):
 
 def main():
 
-    kAnonimity = raw_input("Insert desired k-anonymity level:")
+    kString = raw_input("Insert desired k-anonymity level:")
 
+    kAnonimity = int(kString)
     print str(kAnonimity) + "-anonymizing table containing 1 quasiIdentifier..."
     start = timeit.timeit()
     incognitoTable1(kAnonimity)
@@ -183,14 +186,14 @@ def main():
     print "Elapsed time to " + str(kAnonimity) + \
           "-anonymize a table containing 1 quasiIdentifier: " + str(end - start)
 
-    print str(kAnonimity) + "anonymize table containing 2 quasiIdentifier..."
+    print str(kAnonimity) + "-anonymizing table containing 2 quasiIdentifier..."
     start = timeit.timeit()
     incognitoTable2(kAnonimity)
     end = timeit.timeit()
     print "Elapsed time to " + str(kAnonimity) + \
           "-anonymize a table containing 2 quasiIdentifier: " + str(end - start)
 
-    print str(kAnonimity) + "anonymize table containing 3 quasiIdentifier..."
+    print str(kAnonimity) + "-anonymizing table containing 3 quasiIdentifier..."
     start = timeit.timeit()
     incognitoTable3(kAnonimity)
     end = timeit.timeit()
