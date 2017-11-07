@@ -29,6 +29,7 @@ class DB:
 
 
 
+
     def insertIntoTable1(self):
 
         nomi = ["Sofia","Aurora","Giulia","Emma","Gianni","Giulio","Alessandro","Alessio","Simone"]
@@ -173,9 +174,9 @@ class DB:
     # Questa funzione viene chiamata pero da un DB db2 = DB(pathDatabase da modificare)
     def anonimizzazione(self,tabella,dizionario):
 
-        connection = sqlite3.connect('./AonzoVenduto.sqlite')
+        connection = sqlite3.connect('./PROVA.sqlite')
         cursor = connection.cursor()
-        cursor.execute('ATTACH "./PROVA.sqlite" AS master')
+        cursor.execute('ATTACH "./AonzoVenduto.sqlite" AS master')
         cursor.execute('INSERT OR REPLACE INTO master.TABELLA_1 SELECT * FROM TABELLA_1')
         cursor.execute('INSERT OR REPLACE INTO master.TABELLA_2 SELECT * FROM TABELLA_2')
         cursor.execute('INSERT OR REPLACE INTO master.TABELLA_3 SELECT * FROM TABELLA_3')

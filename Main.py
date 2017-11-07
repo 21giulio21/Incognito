@@ -10,6 +10,15 @@ generalizzazione['DATA_NASCITA'] = 3
 numeroQuasiIdentifier = 3
 listOfQuasiIdentifier = ['ZIPCODE', 'SESSO', 'DATA_NASCITA']
 
+
+def setUpDB(db):
+    db.svuotaTabella("TABELLA_1")
+    db.svuotaTabella("TABELLA_2")
+    db.svuotaTabella("TABELLA_3")
+    db.conn.close()
+    return DB("./AonzoVenduto.sqlite")
+
+
 def incognitoTable1(kAnonimity):
     # applico Incognito alla prima tabella che contiene solo ZIPCODE
     g = Graph.SingleNodeGraph("ZIPCODE")
@@ -99,6 +108,9 @@ def generateCombinationsOfQuasiIdentifier():
 
 # visits all the nodes of a graph (connected component) using BFS
 def bfs(graph, start, kAnonimity, tabella):
+    print "grafo con qi:"
+    print start.quasiIdentifier
+    print "dimensione grafo: " + str(len(graph))
     testDB = DB("./PROVA.sqlite")
     queue = [start]
     # keep looping until there are nodes still to be checked
@@ -120,27 +132,40 @@ def bfs(graph, start, kAnonimity, tabella):
                         + node.quasiIdentifier[1].upper() + "," \
                         + node.quasiIdentifier[2].upper()
                     resultQuery = testDB.selectCountFromQuasiIdentifierTabella(q, tabella)
+
             else:
-                testDB = DB("./AonzoVenduto.sqlite")
+                newTestDB = DB("./AonzoVenduto.sqlite")
                 if len(node.quasiIdentifier) == 1:
-                    testDB.anonimizzazione(tabella, node.levelOfGeneralizations)
-                    resultQuery = testDB.selectCountFromQuasiIdentifierTabella(
+                    db = setUpDB(newTestDB)
+                    db.anonimizzazione(tabella, node.levelOfGeneralizations)
+                    resultQuery = db.selectCountFromQuasiIdentifierTabella(
                         node.quasiIdentifier[0].upper(), tabella
                     )
+                    db.conn.close()
+
                 elif len(node.quasiIdentifier) == 2:
-                    testDB.anonimizzazione(tabella, node.levelOfGeneralizations)
+                    db = setUpDB(newTestDB)
+                    db.anonimizzazione(tabella, node.levelOfGeneralizations)
                     q = node.quasiIdentifier[0].upper() + "," + node.quasiIdentifier[1].upper()
-                    resultQuery = testDB.selectCountFromQuasiIdentifierTabella(q, tabella)
+                    resultQuery = db.selectCountFromQuasiIdentifierTabella(q, tabella)
+                    db.conn.close()
+
+
                 else:
-                    testDB.anonimizzazione(tabella, node.levelOfGeneralizations)
+                    db = setUpDB(newTestDB)
+                    db.anonimizzazione(tabella, node.levelOfGeneralizations)
                     q = node.quasiIdentifier[0].upper() + "," \
                         + node.quasiIdentifier[1].upper() + "," \
                         + node.quasiIdentifier[2].upper()
-                    resultQuery = testDB.selectCountFromQuasiIdentifierTabella(q, tabella)
+                    resultQuery = db.selectCountFromQuasiIdentifierTabella(q, tabella)
+                    db.conn.close()
+
 
             frequencySet = []
             for i in resultQuery:
+                print i
                 frequencySet.append(i[0])
+            print frequencySet
             minimum = min(frequencySet)
             #print "condition: " + str(min(frequencySet)) + " >= " + str(kAnonimity) + " = " + str(minimum >= kAnonimity)
             if minimum >= kAnonimity:
@@ -186,21 +211,22 @@ def main():
     end = time.time()
     print "Elapsed time to " + str(kAnonimity) + \
           "-anonymize a table containing 1 quasiIdentifier: " + str(end - start)
-    '''
+    
     print "\n\n" + str(kAnonimity) + "-anonymizing table containing 2 quasiIdentifier..."
     start = time.time()
     incognitoTable2(kAnonimity)
     end = time.time()
     print "Elapsed time to " + str(kAnonimity) + \
           "-anonymize a table containing 2 quasiIdentifier: " + str(end - start)
-
+    
+    '''
     print "\n\n" + str(kAnonimity) + "-anonymizing table containing 3 quasiIdentifier..."
     start = time.time()
     incognitoTable3(kAnonimity)
     end = time.time()
     print "Elapsed time to " + str(kAnonimity) + \
           "-anonymize a table containing 3 quasiIdentifier: " + str(end - start)
-
+    
 
 if __name__ == "__main__":
     main()

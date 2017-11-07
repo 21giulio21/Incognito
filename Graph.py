@@ -5,7 +5,7 @@ import copy
 
 
 generalizzazione = dict()
-generalizzazione['ZIPCODE'] = 3
+generalizzazione['ZIPCODE'] = 5
 generalizzazione['SESSO'] = 1
 generalizzazione['DATA_NASCITA'] = 3
 
