@@ -1,6 +1,6 @@
 from DB import DB
 import Graph
-import timeit
+import time
 
 
 generalizzazione = dict()
@@ -19,7 +19,7 @@ def incognitoTable1(kAnonimity):
         if n.marked:
             print "RAGGIUNTA K-ANONIMITY NELLA TABELLA1 AL NODO:"
             n.description()
-            return
+
 
 
 def incognitoTable2(kAnonimity):
@@ -140,10 +140,8 @@ def bfs(graph, start, kAnonimity, tabella):
             frequencySet = []
             for i in resultQuery:
                 frequencySet.append(i[0])
-            print "frequency set"
-            print frequencySet
             minimum = min(frequencySet)
-            print "condition: " + str(min(frequencySet)) + " >= " + str(kAnonimity) + " = " + str(minimum >= kAnonimity)
+            #print "condition: " + str(min(frequencySet)) + " >= " + str(kAnonimity) + " = " + str(minimum >= kAnonimity)
             if minimum >= kAnonimity:
                 node.marked = True
                 print "trovato nodo con k anonimity"
@@ -177,26 +175,27 @@ def getKeyByDictionary(levels, graph):
 def main():
 
     kString = raw_input("Insert desired k-anonymity level:")
-
     kAnonimity = int(kString)
+    '''
+    
     print str(kAnonimity) + "-anonymizing table containing 1 quasiIdentifier..."
-    start = timeit.timeit()
+    start = time.time()
     incognitoTable1(kAnonimity)
-    end = timeit.timeit()
+    end = time.time()
     print "Elapsed time to " + str(kAnonimity) + \
           "-anonymize a table containing 1 quasiIdentifier: " + str(end - start)
-
-    print str(kAnonimity) + "-anonymizing table containing 2 quasiIdentifier..."
-    start = timeit.timeit()
+    '''
+    print "\n\n" + str(kAnonimity) + "-anonymizing table containing 2 quasiIdentifier..."
+    start = time.time()
     incognitoTable2(kAnonimity)
-    end = timeit.timeit()
+    end = time.time()
     print "Elapsed time to " + str(kAnonimity) + \
           "-anonymize a table containing 2 quasiIdentifier: " + str(end - start)
 
-    print str(kAnonimity) + "-anonymizing table containing 3 quasiIdentifier..."
-    start = timeit.timeit()
+    print "\n\n" + str(kAnonimity) + "-anonymizing table containing 3 quasiIdentifier..."
+    start = time.time()
     incognitoTable3(kAnonimity)
-    end = timeit.timeit()
+    end = time.time()
     print "Elapsed time to " + str(kAnonimity) + \
           "-anonymize a table containing 3 quasiIdentifier: " + str(end - start)
 

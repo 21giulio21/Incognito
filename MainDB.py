@@ -1,4 +1,9 @@
-
+'''
+    Questa classe ha il solo scopo di illustrare il funzionamento del
+    modulo DB.py e di costruire il database andando a riempire le tre tabelle.
+    Non verrà dunque invocata nell'esecuzione del programma, ma solo nella
+    fase di setup (la prima volta).
+'''
 from DB import DB
 
 '''
