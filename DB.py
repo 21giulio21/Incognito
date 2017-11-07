@@ -1,5 +1,6 @@
 import sqlite3
 from random import randint
+import os
 
 class DB:
 
@@ -165,16 +166,8 @@ class DB:
     # Questa funzione viene chiamata pero da un DB db2 = DB(pathDatabase da modificare)
     def anonimizzazione(self,tabella,dizionario):
 
-        #Riempio prima di tutto il database nuovo dopo averlo svuotato
-        self.svuotaTabella(tabella)
-
-        #Inserisco le tuple nella tabella che devo utilizzare per anonimizzare
-        if tabella == "TABELLA_1":
-            self.insertIntoTable1()
-        elif tabella == "TABELLA_2":
-            self.insertIntoTable2()
-        elif tabella == "TABELLA_3":
-            self.insertIntoTable3()
+        os.system("rm AonzoVenduto.sqlite");
+        os.system("cp PROVA.sqlite AonzoVenduto.sqlite");
 
         #dizionario e' fatto in questo modo: dizionario["SESSO"] = 1
         if "SESSO" in dizionario.keys() and dizionario["SESSO"] == 1:
