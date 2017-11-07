@@ -5,6 +5,8 @@
     fase di setup (la prima volta).
 '''
 from DB import DB
+import sqlite3
+
 
 '''
 Le tabella sono costruite in questo modo: 
@@ -17,6 +19,15 @@ TABELLA_3: ID, ZIPCODE, SESSO, DATA_NASCITA, NOME
 
 '''
 db = DB('./AonzoVenduto.sqlite')
+db.svuotaTabella("TABELLA_1")
+db.svuotaTabella("TABELLA_2")
+db.svuotaTabella("TABELLA_3")
+
+
+db = DB('./AonzoVenduto.sqlite')
+
+
+
 dizionario = dict()
 dizionario["SESSO"] = 0
 dizionario["ZIPCODE"] = 1

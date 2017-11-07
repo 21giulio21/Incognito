@@ -1,6 +1,6 @@
 import sqlite3
 from random import randint
-import os
+
 
 class DB:
 
@@ -161,13 +161,25 @@ class DB:
             print " CAP ->" + zipcode
             print "\n"
 
+    #Dopo aver svuotato le tabelle inserisco le tuple del database: PROVA.sqlite in AonzoVenduto.sqlite
+    def riempimentoTabelle(self,tabella):
+        if tabella == 1:
+            provaDB = DB("./PROVA.sqlite")
+            for i in range(0,400):
+                query = "SELECT * FROM " + tabella + " LIMIT " + str(i) + ", 1;"
+
     # Quando chiamo la funzione anonumizzazione ricreo il database che deve essere modificato
     # in questo modo anonimizzo  questo database temporaneo.
     # Questa funzione viene chiamata pero da un DB db2 = DB(pathDatabase da modificare)
     def anonimizzazione(self,tabella,dizionario):
 
-        os.system("rm AonzoVenduto.sqlite");
-        os.system("cp PROVA.sqlite AonzoVenduto.sqlite");
+        connection = sqlite3.connect('./AonzoVenduto.sqlite')
+        cursor = connection.cursor()
+        cursor.execute('ATTACH "./PROVA.sqlite" AS master')
+        cursor.execute('INSERT OR REPLACE INTO master.TABELLA_1 SELECT * FROM TABELLA_1')
+        cursor.execute('INSERT OR REPLACE INTO master.TABELLA_2 SELECT * FROM TABELLA_2')
+        cursor.execute('INSERT OR REPLACE INTO master.TABELLA_3 SELECT * FROM TABELLA_3')
+        connection.commit()
 
         #dizionario e' fatto in questo modo: dizionario["SESSO"] = 1
         if "SESSO" in dizionario.keys() and dizionario["SESSO"] == 1:
