@@ -19,6 +19,7 @@ def incognitoTable1(kAnonimity):
         if n.marked:
             print "RAGGIUNTA K-ANONIMITY NELLA TABELLA1 AL NODO:"
             n.description()
+            return
 
 
 
@@ -47,7 +48,7 @@ def incognitoTable2(kAnonimity):
                 if n.marked:
                     print "RAGGIUNTA K-ANONIMITY NELLA TABELLA2 AL NODO:"
                     n.description()
-                    return
+
 
 
 def incognitoTable3(kAnonimity):
@@ -143,6 +144,7 @@ def bfs(graph, start, kAnonimity, tabella):
             minimum = min(frequencySet)
             #print "condition: " + str(min(frequencySet)) + " >= " + str(kAnonimity) + " = " + str(minimum >= kAnonimity)
             if minimum >= kAnonimity:
+                node.description()
                 node.marked = True
                 print "trovato nodo con k anonimity"
                 for n in graph[node]:
@@ -176,8 +178,8 @@ def main():
 
     kString = raw_input("Insert desired k-anonymity level:")
     kAnonimity = int(kString)
+
     '''
-    
     print str(kAnonimity) + "-anonymizing table containing 1 quasiIdentifier..."
     start = time.time()
     incognitoTable1(kAnonimity)

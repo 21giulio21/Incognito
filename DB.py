@@ -78,7 +78,9 @@ class DB:
 
     def insertIntoTable2(self):
 
-        nomi = ["Sofia", "Aurora", "Giulia", "Emma", "Francesco", "Giulio", "Alessandro", "Alessio"]
+        nomi = ["Sofia", "Aurora", "Giulia", "Emma", "Francesco", "Giulio", "Alessandro",
+                "Alessio"]
+
         cap = ["16121", "16120", "16132", "16321", "12121", "26121", "36121", "16336",
                "16231", "16430", "26132", "36622", "52151", "45141", "36611", "19306",
                "19834", "12234", "12345", "14451", "15126", "26178", "76728", "18906",
@@ -87,8 +89,9 @@ class DB:
                "37489", "28390", "48392", "34321", "34567", "43456", "32433", "43232"]
 
         for i in range(0, 400):
-            nome = nomi[randint(0, len(nomi) - 1)]
-            capSingolo = cap[randint(0, len(cap) - 1)]
+
+            nome = nomi[randint(0, len(nomi)-1)]
+            capSingolo = cap[randint(0, len(cap)-1)]
             if nome[len(nome)-1] == "o":
                 sesso = "M"
             else:
