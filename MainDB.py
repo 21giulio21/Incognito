@@ -27,15 +27,14 @@ db = setUpDB(db)
 
 dizionario = dict()
 dizionario["SESSO"] = 0
-dizionario["ZIPCODE"] = 5
-dizionario["DATA_NASCITA"] = 0
-db.anonimizzazione("TABELLA_2",dizionario)
+dizionario["ZIPCODE"] = 1
+dizionario["DATA_NASCITA"] = 1
+db.anonimizzazione("TABELLA_3",dizionario)
 db.stampaTabella2()
-res = db.selectCountFromQuasiIdentifierTabella("SESSO,ZIPCODE", "TABELLA_2")
-freq = []
-for i in res:
-    freq.append(i[0])
-print freq
+valori = db.selectCountFromQuasiIdentifierTabella("SESSO,ZIPCODE", "TABELLA_3",True)
+for i in valori:
+    print i
+
 
 #db.insertIntoTable2()
 
