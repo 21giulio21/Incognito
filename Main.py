@@ -2,7 +2,7 @@ from DB import DB
 import Graph
 import time
 
-
+suppression = False
 generalizzazione = dict()
 generalizzazione['ZIPCODE'] = 5
 generalizzazione['SESSO'] = 1
@@ -19,7 +19,7 @@ def setUpDB(db):
     return DB("./AonzoVenduto.sqlite")
 
 
-def incognitoTable1(kAnonimity):
+def incognitoTable1(kAnonimity, flag):
     # applico Incognito alla prima tabella che contiene solo ZIPCODE
     g = Graph.SingleNodeGraph("ZIPCODE")
     bfs(g.getGraph(), g.getRoot(), kAnonimity, "TABELLA_1")
@@ -107,7 +107,7 @@ def generateCombinationsOfQuasiIdentifier():
 
 
 # visits all the nodes of a graph (connected component) using BFS
-def bfs(graph, start, kAnonimity, tabella):
+def bfs(graph, start, kAnonimity, tabella, flag):
     print "grafo con qi:"
     print start.quasiIdentifier
     print "dimensione grafo: " + str(len(graph))
@@ -122,16 +122,16 @@ def bfs(graph, start, kAnonimity, tabella):
             if node.isRoot:
                 if len(node.quasiIdentifier) == 1:
                     resultQuery = testDB.selectCountFromQuasiIdentifierTabella(
-                        node.quasiIdentifier[0].upper(), tabella
+                        node.quasiIdentifier[0].upper(), tabella, flag
                     )
                 elif len(node.quasiIdentifier) == 2:
                     q = node.quasiIdentifier[0].upper() + "," + node.quasiIdentifier[1].upper()
-                    resultQuery = testDB.selectCountFromQuasiIdentifierTabella(q, tabella)
+                    resultQuery = testDB.selectCountFromQuasiIdentifierTabella(q, tabella, flag)
                 else:
                     q = node.quasiIdentifier[0].upper() + "," \
                         + node.quasiIdentifier[1].upper() + "," \
                         + node.quasiIdentifier[2].upper()
-                    resultQuery = testDB.selectCountFromQuasiIdentifierTabella(q, tabella)
+                    resultQuery = testDB.selectCountFromQuasiIdentifierTabella(q, tabella, flag)
 
             else:
                 newTestDB = DB("./AonzoVenduto.sqlite")
@@ -139,7 +139,7 @@ def bfs(graph, start, kAnonimity, tabella):
                     db = setUpDB(newTestDB)
                     db.anonimizzazione(tabella, node.levelOfGeneralizations)
                     resultQuery = db.selectCountFromQuasiIdentifierTabella(
-                        node.quasiIdentifier[0].upper(), tabella
+                        node.quasiIdentifier[0].upper(), tabella, flag
                     )
                     db.conn.close()
 
@@ -147,7 +147,7 @@ def bfs(graph, start, kAnonimity, tabella):
                     db = setUpDB(newTestDB)
                     db.anonimizzazione(tabella, node.levelOfGeneralizations)
                     q = node.quasiIdentifier[0].upper() + "," + node.quasiIdentifier[1].upper()
-                    resultQuery = db.selectCountFromQuasiIdentifierTabella(q, tabella)
+                    resultQuery = db.selectCountFromQuasiIdentifierTabella(q, tabella, flag)
                     db.conn.close()
 
 
@@ -157,7 +157,7 @@ def bfs(graph, start, kAnonimity, tabella):
                     q = node.quasiIdentifier[0].upper() + "," \
                         + node.quasiIdentifier[1].upper() + "," \
                         + node.quasiIdentifier[2].upper()
-                    resultQuery = db.selectCountFromQuasiIdentifierTabella(q, tabella)
+                    resultQuery = db.selectCountFromQuasiIdentifierTabella(q, tabella, flag)
                     db.conn.close()
 
 
@@ -200,11 +200,19 @@ def getKeyByDictionary(levels, graph):
 
 
 def main():
-
+    while True:
+        print("This prints once a minute.")
+        time.sleep(2)
     kString = raw_input("Insert desired k-anonymity level:")
     kAnonimity = int(kString)
 
-    '''
+    answer = raw_input("Do you want suppress in case of unreachble k-anonymity? (y/n)")
+    if answer == 'y':
+        flag = True
+    else:
+        flag = False
+
+
     print str(kAnonimity) + "-anonymizing table containing 1 quasiIdentifier..."
     start = time.time()
     incognitoTable1(kAnonimity)
@@ -219,14 +227,14 @@ def main():
     print "Elapsed time to " + str(kAnonimity) + \
           "-anonymize a table containing 2 quasiIdentifier: " + str(end - start)
     
-    '''
+
     print "\n\n" + str(kAnonimity) + "-anonymizing table containing 3 quasiIdentifier..."
     start = time.time()
     incognitoTable3(kAnonimity)
     end = time.time()
     print "Elapsed time to " + str(kAnonimity) + \
           "-anonymize a table containing 3 quasiIdentifier: " + str(end - start)
-    
+
 
 if __name__ == "__main__":
     main()
