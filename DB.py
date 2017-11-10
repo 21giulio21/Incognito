@@ -176,7 +176,7 @@ class DB:
 
         connection = sqlite3.connect('./PROVA.sqlite')
         cursor = connection.cursor()
-        cursor.execute('ATTACH "./TMP.sqlite" AS master')
+        cursor.execute('ATTACH "./TEMP.sqlite" AS master')
         cursor.execute('INSERT OR REPLACE INTO master.TABELLA_1 SELECT * FROM TABELLA_1')
         cursor.execute('INSERT OR REPLACE INTO master.TABELLA_2 SELECT * FROM TABELLA_2')
         cursor.execute('INSERT OR REPLACE INTO master.TABELLA_3 SELECT * FROM TABELLA_3')
