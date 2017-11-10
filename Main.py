@@ -144,7 +144,7 @@ def bfs(graph, start, kAnonimity, tabella, flag):
                     resultQuery = testDB.selectCountFromQuasiIdentifierTabella(q, tabella)
 
             else:
-                newTestDB = DB("./TMP.sqlite")
+                newTestDB = DB("./TEMP.sqlite")
                 if len(node.quasiIdentifier) == 1:
                     db = setUpDB(newTestDB)
                     db.anonimizzazione(tabella, node.levelOfGeneralizations)

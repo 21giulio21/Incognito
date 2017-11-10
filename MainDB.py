@@ -18,7 +18,7 @@ TABELLA_3: ID, ZIPCODE, SESSO, DATA_NASCITA, NOME
 
 '''
 
-db = DB('./TMP.sqlite')
+db = DB('./TEMP.sqlite')
 
 db = setUpDB(db)
 
