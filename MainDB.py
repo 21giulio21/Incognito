@@ -5,7 +5,6 @@
     fase di setup (la prima volta).
 '''
 from DB import DB
-import sqlite3
 
 from Main import setUpDB
 '''
@@ -19,7 +18,7 @@ TABELLA_3: ID, ZIPCODE, SESSO, DATA_NASCITA, NOME
 
 '''
 
-db = DB('./AonzoVenduto.sqlite')
+db = DB('./TMP.sqlite')
 
 db = setUpDB(db)
 

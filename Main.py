@@ -1,8 +1,10 @@
+import copy
 from DB import DB
 import Graph
 import time
 
-suppression = False
+delta = 5
+
 generalizzazione = dict()
 generalizzazione['ZIPCODE'] = 5
 generalizzazione['SESSO'] = 1
@@ -10,19 +12,26 @@ generalizzazione['DATA_NASCITA'] = 3
 numeroQuasiIdentifier = 3
 listOfQuasiIdentifier = ['ZIPCODE', 'SESSO', 'DATA_NASCITA']
 
+def suppression(frequencySet):
+    toRet = []
+    for i in frequencySet:
+        if i > delta:
+            toRet.append(i)
+    return toRet
+
 
 def setUpDB(db):
     db.svuotaTabella("TABELLA_1")
     db.svuotaTabella("TABELLA_2")
     db.svuotaTabella("TABELLA_3")
     db.conn.close()
-    return DB("./AonzoVenduto.sqlite")
+    return DB("./TEMP.sqlite")
 
 
 def incognitoTable1(kAnonimity, flag):
     # applico Incognito alla prima tabella che contiene solo ZIPCODE
     g = Graph.SingleNodeGraph("ZIPCODE")
-    bfs(g.getGraph(), g.getRoot(), kAnonimity, "TABELLA_1")
+    bfs(g.getGraph(), g.getRoot(), kAnonimity, "TABELLA_1", flag)
     print "Nodo marked"
     for n in g.getGraph():
         if n.marked:
@@ -32,7 +41,7 @@ def incognitoTable1(kAnonimity, flag):
 
 
 
-def incognitoTable2(kAnonimity):
+def incognitoTable2(kAnonimity, flag):
     # applico Incognito alla prima tabella che contiene ZIPCODE
     localListOfQi = ["ZIPCODE", "SESSO"]
     localGraphList = []
@@ -49,7 +58,7 @@ def incognitoTable2(kAnonimity):
 
     localGraphDict['2'] = localGraph2List
 
-    bfsIncognito(localGraphDict, kAnonimity, "TABELLA_2")
+    bfsIncognito(localGraphDict, kAnonimity, "TABELLA_2", flag)
 
     for i in localGraphDict:
         for g in localGraphDict[i]:
@@ -57,10 +66,11 @@ def incognitoTable2(kAnonimity):
                 if n.marked:
                     print "RAGGIUNTA K-ANONIMITY NELLA TABELLA2 AL NODO:"
                     n.description()
+                    break
 
 
 
-def incognitoTable3(kAnonimity):
+def incognitoTable3(kAnonimity, flag):
     totalGraphDict = dict()
     # costruzione grafo con nodi contenenti un solo quasi identifier
     tmp = []
@@ -85,7 +95,7 @@ def incognitoTable3(kAnonimity):
                               listOfQuasiIdentifier[2])
     tmp.append(g)
     totalGraphDict['3'] = tmp
-    bfsIncognito(totalGraphDict, kAnonimity, "TABELLA_3")
+    bfsIncognito(totalGraphDict, kAnonimity, "TABELLA_3", flag)
 
     for i in totalGraphDict:
         for g in totalGraphDict[i]:
@@ -93,7 +103,7 @@ def incognitoTable3(kAnonimity):
                 if n.marked:
                     print "RAGGIUNTA K-ANONIMITY NELLA TABELLA2 AL NODO:"
                     n.description()
-                    return
+                    break
 
 
 def generateCombinationsOfQuasiIdentifier():
@@ -122,24 +132,24 @@ def bfs(graph, start, kAnonimity, tabella, flag):
             if node.isRoot:
                 if len(node.quasiIdentifier) == 1:
                     resultQuery = testDB.selectCountFromQuasiIdentifierTabella(
-                        node.quasiIdentifier[0].upper(), tabella, flag
+                        node.quasiIdentifier[0].upper(), tabella
                     )
                 elif len(node.quasiIdentifier) == 2:
                     q = node.quasiIdentifier[0].upper() + "," + node.quasiIdentifier[1].upper()
-                    resultQuery = testDB.selectCountFromQuasiIdentifierTabella(q, tabella, flag)
+                    resultQuery = testDB.selectCountFromQuasiIdentifierTabella(q, tabella)
                 else:
                     q = node.quasiIdentifier[0].upper() + "," \
                         + node.quasiIdentifier[1].upper() + "," \
                         + node.quasiIdentifier[2].upper()
-                    resultQuery = testDB.selectCountFromQuasiIdentifierTabella(q, tabella, flag)
+                    resultQuery = testDB.selectCountFromQuasiIdentifierTabella(q, tabella)
 
             else:
-                newTestDB = DB("./AonzoVenduto.sqlite")
+                newTestDB = DB("./TMP.sqlite")
                 if len(node.quasiIdentifier) == 1:
                     db = setUpDB(newTestDB)
                     db.anonimizzazione(tabella, node.levelOfGeneralizations)
                     resultQuery = db.selectCountFromQuasiIdentifierTabella(
-                        node.quasiIdentifier[0].upper(), tabella, flag
+                        node.quasiIdentifier[0].upper(), tabella
                     )
                     db.conn.close()
 
@@ -147,7 +157,7 @@ def bfs(graph, start, kAnonimity, tabella, flag):
                     db = setUpDB(newTestDB)
                     db.anonimizzazione(tabella, node.levelOfGeneralizations)
                     q = node.quasiIdentifier[0].upper() + "," + node.quasiIdentifier[1].upper()
-                    resultQuery = db.selectCountFromQuasiIdentifierTabella(q, tabella, flag)
+                    resultQuery = db.selectCountFromQuasiIdentifierTabella(q, tabella)
                     db.conn.close()
 
 
@@ -157,17 +167,20 @@ def bfs(graph, start, kAnonimity, tabella, flag):
                     q = node.quasiIdentifier[0].upper() + "," \
                         + node.quasiIdentifier[1].upper() + "," \
                         + node.quasiIdentifier[2].upper()
-                    resultQuery = db.selectCountFromQuasiIdentifierTabella(q, tabella, flag)
+                    resultQuery = db.selectCountFromQuasiIdentifierTabella(q, tabella)
                     db.conn.close()
 
 
             frequencySet = []
             for i in resultQuery:
-                print i
+                if i[0] >= delta:
+                    print i[0]
                 frequencySet.append(i[0])
-            print frequencySet
+            backup = copy.copy(frequencySet)
+            if flag == True and max(frequencySet) > delta:
+                frequencySet = suppression(backup)
             minimum = min(frequencySet)
-            #print "condition: " + str(min(frequencySet)) + " >= " + str(kAnonimity) + " = " + str(minimum >= kAnonimity)
+            print frequencySet
             if minimum >= kAnonimity:
                 node.description()
                 node.marked = True
@@ -185,10 +198,10 @@ def bfs(graph, start, kAnonimity, tabella, flag):
                         queue.append(nodeToAdd)
 
 
-def bfsIncognito(totalGraph, kAnonimity, tabella):
+def bfsIncognito(totalGraph, kAnonimity, tabella, flag):
     for k in totalGraph:
         for g in totalGraph[k]:
-            bfs(g.getGraph(), g.getRoot(), kAnonimity, tabella)
+            bfs(g.getGraph(), g.getRoot(), kAnonimity, tabella, flag)
 
 
 
@@ -200,13 +213,12 @@ def getKeyByDictionary(levels, graph):
 
 
 def main():
-    while True:
-        print("This prints once a minute.")
-        time.sleep(2)
+
     kString = raw_input("Insert desired k-anonymity level:")
     kAnonimity = int(kString)
 
     answer = raw_input("Do you want suppress in case of unreachble k-anonymity? (y/n)")
+    flag = False
     if answer == 'y':
         flag = True
     else:
@@ -215,14 +227,14 @@ def main():
 
     print str(kAnonimity) + "-anonymizing table containing 1 quasiIdentifier..."
     start = time.time()
-    incognitoTable1(kAnonimity)
+    incognitoTable1(kAnonimity, flag)
     end = time.time()
     print "Elapsed time to " + str(kAnonimity) + \
           "-anonymize a table containing 1 quasiIdentifier: " + str(end - start)
     
     print "\n\n" + str(kAnonimity) + "-anonymizing table containing 2 quasiIdentifier..."
     start = time.time()
-    incognitoTable2(kAnonimity)
+    incognitoTable2(kAnonimity, flag)
     end = time.time()
     print "Elapsed time to " + str(kAnonimity) + \
           "-anonymize a table containing 2 quasiIdentifier: " + str(end - start)
@@ -230,7 +242,7 @@ def main():
 
     print "\n\n" + str(kAnonimity) + "-anonymizing table containing 3 quasiIdentifier..."
     start = time.time()
-    incognitoTable3(kAnonimity)
+    incognitoTable3(kAnonimity, flag)
     end = time.time()
     print "Elapsed time to " + str(kAnonimity) + \
           "-anonymize a table containing 3 quasiIdentifier: " + str(end - start)
