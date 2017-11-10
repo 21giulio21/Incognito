@@ -3,10 +3,7 @@ from DB import DB
 import Graph
 import time
 
-
-
 delta = 5
-
 
 generalizzazione = dict()
 generalizzazione['ZIPCODE'] = 5
@@ -31,7 +28,7 @@ def setUpDB(db):
     return DB("./TEMP.sqlite")
 
 
-def incognitoTable1(kAnonimity):
+def incognitoTable1(kAnonimity, flag):
     # applico Incognito alla prima tabella che contiene solo ZIPCODE
     g = Graph.SingleNodeGraph("ZIPCODE")
     bfs(g.getGraph(), g.getRoot(), kAnonimity, "TABELLA_1", flag)
@@ -120,7 +117,7 @@ def generateCombinationsOfQuasiIdentifier():
 
 
 # visits all the nodes of a graph (connected component) using BFS
-def bfs(graph, start, kAnonimity, tabella):
+def bfs(graph, start, kAnonimity, tabella, flag):
     print "grafo con qi:"
     print start.quasiIdentifier
     print "dimensione grafo: " + str(len(graph))
@@ -147,7 +144,7 @@ def bfs(graph, start, kAnonimity, tabella):
                     resultQuery = testDB.selectCountFromQuasiIdentifierTabella(q, tabella)
 
             else:
-                newTestDB = DB("./TEMP.sqlite")
+                newTestDB = DB("./TMP.sqlite")
                 if len(node.quasiIdentifier) == 1:
                     db = setUpDB(newTestDB)
                     db.anonimizzazione(tabella, node.levelOfGeneralizations)
@@ -220,7 +217,6 @@ def main():
     kString = raw_input("Insert desired k-anonymity level:")
     kAnonimity = int(kString)
 
-
     answer = raw_input("Do you want suppress in case of unreachble k-anonymity? (y/n)")
     flag = False
     if answer == 'y':
@@ -243,14 +239,14 @@ def main():
     print "Elapsed time to " + str(kAnonimity) + \
           "-anonymize a table containing 2 quasiIdentifier: " + str(end - start)
     
-    
+
     print "\n\n" + str(kAnonimity) + "-anonymizing table containing 3 quasiIdentifier..."
     start = time.time()
     incognitoTable3(kAnonimity, flag)
     end = time.time()
     print "Elapsed time to " + str(kAnonimity) + \
           "-anonymize a table containing 3 quasiIdentifier: " + str(end - start)
-    
+
 
 if __name__ == "__main__":
     main()

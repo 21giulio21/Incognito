@@ -18,7 +18,7 @@ TABELLA_3: ID, ZIPCODE, SESSO, DATA_NASCITA, NOME
 
 '''
 
-db = DB('./TEMP.sqlite')
+db = DB('./TMP.sqlite')
 
 db = setUpDB(db)
 
@@ -26,14 +26,15 @@ db = setUpDB(db)
 
 dizionario = dict()
 dizionario["SESSO"] = 0
-dizionario["ZIPCODE"] = 1
-dizionario["DATA_NASCITA"] = 1
-db.anonimizzazione("TABELLA_3",dizionario)
+dizionario["ZIPCODE"] = 5
+dizionario["DATA_NASCITA"] = 0
+db.anonimizzazione("TABELLA_2",dizionario)
 db.stampaTabella2()
-valori = db.selectCountFromQuasiIdentifierTabella("SESSO,ZIPCODE", "TABELLA_3",True)
-for i in valori:
-    print i
-
+res = db.selectCountFromQuasiIdentifierTabella("SESSO,ZIPCODE", "TABELLA_2")
+freq = []
+for i in res:
+    freq.append(i[0])
+print freq
 
 #db.insertIntoTable2()
 

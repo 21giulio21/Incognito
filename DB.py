@@ -4,9 +4,6 @@ from random import randint
 
 class DB:
 
-    # Le frequenze minori del delta vengono tolti
-    delta = 5
-
     #Passo il path nel costruttore
     def __init__(self,pathDatabase):
         self.conn = sqlite3.connect(pathDatabase)
@@ -111,32 +108,26 @@ class DB:
     # In questa funzione deve esserci: Select COUNT(*) FROM TABELLA GROUP BY Q1,Q2
     # TORNA UN ARRay associativo in cui in posizione ARRAY[0] conviene la prima tupla e
     # ARRAY[0][0] CONTIENE L'ID DELLA TUPLA 0 E ARRAY[0][1] torna lo zipcode della
-    # prima tupla, ovviamente i qi vanno datiin questo modo: q1,q2.
-    # Il flag soppressione indica che se e' true tutti  i valori minori di delta
-    # vengono eliminati eltrimento no.
-    def selectCountFromQuasiIdentifierTabella(self,qi, tabella,soppressione):
+    # prima tupla, ovviamente i qi vanno datiin questo modo: q1,q2
+    def selectCountFromQuasiIdentifierTabella(self,qi, tabella):
         query = "Select Count(*),"+qi+" from " + tabella + " GROUP BY " + qi
-        valori = self.cursore.execute(query).fetchall();
-
-        # Ora controllo che il count (i[0]) sia minore o uguale al delta
-        # in caso il count sia minore o uguale al delta li tolgo se il flag soppressione
-        # e' vero
-        if soppressione:
-            for i in valori:
-                count = i[0]
-                zipcode = i[2]
-
-                # Se l'if e' verificato elimino tutte le tuple che hanno quello zipdoce
-                if count <= self.delta:
-                    query = "DELETE FROM "+tabella+" WHERE ZIPCODE='" +zipcode + "';"
-                    valori = self.cursore.execute(query).fetchall();
-
-        query = "Select Count(*)," + qi + " from " + tabella + " GROUP BY " + qi
         return self.cursore.execute(query).fetchall();
 
+     # In questa funzione deve esserci: Select COUNT(*) FROM TABELLA GROUP BY Q1,Q2
+    # TORNA UN ARRay associativo in cui in posizione ARRAY[0] conviene la prima tupla e
+    #  ARRAY[0][0] CONTIENE L'ID DELLA TUPLA 0 E ARRAY[0][1] torna lo zipcode della
+    # prima tupla e ARRAY[0][2] contiene il sesso, ovviamente i qi vanno datiin questo modo: q1,q2
+    def selectCountFromQuasiIdentifierTabella2(self,qi):
+        query = "Select Count(*),"+qi+" from TABELLA_2 GROUP BY " + qi
+        return self.cursore.execute(query).fetchall();
 
-
-
+    # In questa funzione deve esserci: Select COUNT(*) FROM TABELLA GROUP BY Q1,Q2
+    # TORNA UN ARRay associativo in cui in posizione ARRAY[0] conviene la prima tupla e
+    #  ARRAY[0][0] CONTIENE L'ID DELLA TUPLA 0 E ARRAY[0][1] torna lo zipcode della
+    # prima tupla e ARRAY[0][2] contiene il sesso,ovviamente i qi vanno datiin questo modo: q1,q2
+    def selectCountFromQuasiIdentifierTabella3(self,qi):
+        query = "Select Count(*),"+qi+" from TABELLA_3 GROUP BY " + qi
+        return self.cursore.execute(query).fetchall();
 
 
     def stampaTabella2(self):
@@ -171,7 +162,7 @@ class DB:
             print " CAP ->" + zipcode
             print "\n"
 
-    #Dopo aver svuotato le tabelle inserisco le tuple del database: PROVA.sqlite in TEMP.sqlite
+    #Dopo aver svuotato le tabelle inserisco le tuple del database: PROVA.sqlite in TMP.sqlite
     def riempimentoTabelle(self,tabella):
         if tabella == 1:
             provaDB = DB("./PROVA.sqlite")
@@ -185,7 +176,7 @@ class DB:
 
         connection = sqlite3.connect('./PROVA.sqlite')
         cursor = connection.cursor()
-        cursor.execute('ATTACH "./TEMP.sqlite" AS master')
+        cursor.execute('ATTACH "./TMP.sqlite" AS master')
         cursor.execute('INSERT OR REPLACE INTO master.TABELLA_1 SELECT * FROM TABELLA_1')
         cursor.execute('INSERT OR REPLACE INTO master.TABELLA_2 SELECT * FROM TABELLA_2')
         cursor.execute('INSERT OR REPLACE INTO master.TABELLA_3 SELECT * FROM TABELLA_3')
