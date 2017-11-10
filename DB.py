@@ -171,7 +171,7 @@ class DB:
             print " CAP ->" + zipcode
             print "\n"
 
-    #Dopo aver svuotato le tabelle inserisco le tuple del database: PROVA.sqlite in AonzoVenduto.sqlite
+    #Dopo aver svuotato le tabelle inserisco le tuple del database: PROVA.sqlite in TEMP.sqlite
     def riempimentoTabelle(self,tabella):
         if tabella == 1:
             provaDB = DB("./PROVA.sqlite")
@@ -185,7 +185,7 @@ class DB:
 
         connection = sqlite3.connect('./PROVA.sqlite')
         cursor = connection.cursor()
-        cursor.execute('ATTACH "./AonzoVenduto.sqlite" AS master')
+        cursor.execute('ATTACH "./TEMP.sqlite" AS master')
         cursor.execute('INSERT OR REPLACE INTO master.TABELLA_1 SELECT * FROM TABELLA_1')
         cursor.execute('INSERT OR REPLACE INTO master.TABELLA_2 SELECT * FROM TABELLA_2')
         cursor.execute('INSERT OR REPLACE INTO master.TABELLA_3 SELECT * FROM TABELLA_3')
