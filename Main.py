@@ -172,9 +172,14 @@ def bfs(graph, start, kAnonimity, tabella, flag):
 
 
             frequencySet = []
+            count = 0
             for i in resultQuery:
-                if i[0] >= delta:
-                    print i[0]
+                count += 1
+                print i
+                if count > 5:
+                    break
+
+
                 frequencySet.append(i[0])
             backup = copy.copy(frequencySet)
             if flag == True and max(frequencySet) > delta:
